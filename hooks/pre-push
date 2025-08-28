@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v npm >/dev/null 2>&1; then
+  npm test || {
+    echo "[clide] tests failed; logging defect stub"
+    if [ -f memory_bank.db ]; then
+      sqlite3 memory_bank.db <<'SQL'
+INSERT INTO defects(title, description, severity, status, detected_by)
+VALUES ('Pre-push test failure',
+        'One or more tests failed during pre-push. See local logs.',
+        'major','open','test');
+SQL
+    fi
+    exit 1
+  }
+fi

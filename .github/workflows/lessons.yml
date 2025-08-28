@@ -1,0 +1,49 @@
+name: Weekly Lessons
+on:
+  schedule:
+    - cron: "0 13 * * 1"  # Mondays 13:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  lessons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install sqlite3
+        run: sudo apt-get update && sudo apt-get install -y sqlite3
+      - name: Generate lessons report
+        run: |
+          if [ -f memory_bank.db ]; then
+            mkdir -p reports
+            TODAY=$(date +%F)
+            {
+              echo "# Lessons Learned ($TODAY)"
+              echo "## Frequent Tags (last 30 days)"
+              sqlite3 -markdown memory_bank.db "
+                SELECT tags, COUNT(*) AS cnt
+                FROM landmines
+                WHERE created_at >= datetime('now','-30 days')
+                GROUP BY tags ORDER BY cnt DESC LIMIT 10;"
+              echo "## Reopened / Regressed Defects (open now)"
+              sqlite3 -markdown memory_bank.db "
+                SELECT id, title, status, COALESCE(resolution,'') as resolution
+                FROM defects
+                WHERE status IN ('open','in_progress','blocked')
+                ORDER BY id DESC LIMIT 20;"
+            } > reports/lessons-$TODAY.md
+
+            sqlite3 memory_bank.db "
+              INSERT INTO milestones(name, description, owner)
+              VALUES ('Weekly Lessons (' || '$TODAY' || ')','Auto-summary of landmines/defects','Clide');"
+          else
+            echo "memory_bank.db not found; skipping"
+          fi
+      - name: Commit report
+        run: |
+          if ls reports/lessons-*.md >/dev/null 2>&1; then
+            git config user.email "clide-bot@example.com"
+            git config user.name "Clide Bot"
+            git add reports/lessons-*.md
+            git commit -m "chore(reports): weekly lessons"
+            git push || true
+          fi

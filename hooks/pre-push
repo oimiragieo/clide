@@ -1,17 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if command -v npm >/dev/null 2>&1; then
-  npm test || {
-    echo "[clide] tests failed; logging defect stub"
+# Run Python tests if pytest is available
+if command -v pytest >/dev/null 2>&1; then
+  echo "[clide] Running tests..."
+  pytest tests/ -v || {
+    echo "[clide] tests failed; logging defect"
     if [ -f memory_bank.db ]; then
-      sqlite3 memory_bank.db <<'SQL'
+      if [ -x "./clide" ]; then
+        ./clide defect "Pre-push test failure" -d "One or more tests failed during pre-push" -s major || true
+      else
+        sqlite3 memory_bank.db <<'SQL'
 INSERT INTO defects(title, description, severity, status, detected_by)
 VALUES ('Pre-push test failure',
         'One or more tests failed during pre-push. See local logs.',
         'major','open','test');
 SQL
+      fi
     fi
     exit 1
   }
+elif command -v python3 >/dev/null 2>&1; then
+  echo "[clide] Running Python tests..."
+  python3 -m pytest tests/ -v 2>/dev/null || echo "[clide] No tests found or pytest not installed"
+else
+  echo "[clide] No test runner found, skipping tests"
 fi

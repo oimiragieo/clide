@@ -4,9 +4,13 @@ set -euo pipefail
 
 if [ -f "./memory_bank.db" ] && command -v sqlite3 >/dev/null 2>&1; then
   echo "[clide] pre-commit: summarizing changes"
-  if command -v clide >/dev/null 2>&1; then
-    clide /clide-save || true
+  # Try to use clide CLI if available
+  if [ -x "./clide" ]; then
+    ./clide save -m "Pre-commit auto-save" || true
+  elif command -v clide >/dev/null 2>&1; then
+    clide save -m "Pre-commit auto-save" || true
   else
-    sqlite3 memory_bank.db       "INSERT INTO agents_log(agent, action, details) VALUES('Clide','pre_commit','Auto-save triggered');"
+    # Fallback to direct SQL
+    sqlite3 memory_bank.db "INSERT INTO agents_log(agent, action, details) VALUES('Clide','pre_commit','Auto-save triggered');"
   fi
 fi

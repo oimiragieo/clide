@@ -1,5 +1,9 @@
+"""Clide Dashboard - Web interface for viewing project memory bank."""
+
+import os
+import sqlite3
+
 from flask import Flask, render_template_string
-import sqlite3, os
 
 DB = os.getenv("CLIDE_DB", "memory_bank.db")
 app = Flask(__name__)
@@ -34,17 +38,26 @@ T = """
 </ul>
 """
 
+
 def q(sql, args=()):
+    """Execute SQL query and return results as Row objects."""
     with sqlite3.connect(DB) as c:
         c.row_factory = sqlite3.Row
         return c.execute(sql, args).fetchall()
 
+
 @app.route("/")
 def home():
+    """Render dashboard homepage with open work, critical defects, and landmines."""
     open_work = q("SELECT * FROM v_open_work LIMIT 50")
-    crit = q("SELECT id,title,status FROM defects WHERE status IN ('open','in_progress','blocked') AND severity='critical' ORDER BY id DESC LIMIT 20")
-    land = q("SELECT id,summary,solution_verification FROM landmines ORDER BY updated_at DESC LIMIT 20")
+    crit = q(
+        "SELECT id,title,status FROM defects WHERE status IN ('open','in_progress','blocked') AND severity='critical' ORDER BY id DESC LIMIT 20"
+    )
+    land = q(
+        "SELECT id,summary,solution_verification FROM landmines ORDER BY updated_at DESC LIMIT 20"
+    )
     return render_template_string(T, db=DB, open_work=open_work, crit=crit, land=land)
 
+
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host="127.0.0.1", port=5000)

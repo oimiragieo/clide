@@ -7,7 +7,7 @@ from pathlib import Path
 src_path = Path(__file__).parent.parent / "src"
 sys.path.insert(0, str(src_path))
 
-from clide import __version__
+from clide import __version__  # noqa: E402
 
 
 def test_version():

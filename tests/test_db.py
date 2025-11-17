@@ -8,7 +8,7 @@ from pathlib import Path
 src_path = Path(__file__).parent.parent / "src"
 sys.path.insert(0, str(src_path))
 
-from clide.db import Database
+from clide.db import Database  # noqa: E402
 
 
 def test_database_creation():

@@ -21,16 +21,19 @@ def dashboard_command(host: str = "127.0.0.1", port: int = 5000, debug: bool = F
 
         from flask import Flask, render_template_string
 
-        DB = config.db_path
+        db_path = config.db_path
         app = Flask(__name__)
 
-        T = """
+        template = """
 <!doctype html>
 <html>
 <head>
     <title>Clide Dashboard</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 40px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 40px;
+        }
         h1 { color: #333; }
         h2 { color: #666; margin-top: 30px; }
         table { border-collapse: collapse; width: 100%; margin: 20px 0; }
@@ -88,7 +91,7 @@ def dashboard_command(host: str = "127.0.0.1", port: int = 5000, debug: bool = F
         """
 
         def q(sql, args=()):
-            with sqlite3.connect(DB) as c:
+            with sqlite3.connect(db_path) as c:
                 c.row_factory = sqlite3.Row
                 return c.execute(sql, args).fetchall()
 
@@ -104,7 +107,9 @@ def dashboard_command(host: str = "127.0.0.1", port: int = 5000, debug: bool = F
                 "SELECT id,summary,solution_verification FROM landmines "
                 "ORDER BY updated_at DESC LIMIT 20"
             )
-            return render_template_string(T, db=DB, open_work=open_work, crit=crit, land=land)
+            return render_template_string(
+                template, db=db_path, open_work=open_work, crit=crit, land=land
+            )
 
         print_success("Dashboard started successfully")
         app.run(host=host, port=port, debug=debug)

@@ -70,7 +70,8 @@ def report_command(table: str, output: Optional[str] = None, fmt: str = "markdow
 def generate_markdown(table: str, data: list) -> str:
     """Generate markdown report."""
     lines = [f"# {table.title()} Report", ""]
-    lines.append(f"Generated: {db.execute_one('SELECT datetime(\"now\")')[0]}")
+    now_time = db.execute_one("SELECT datetime('now')")[0]
+    lines.append(f"Generated: {now_time}")
     lines.append(f"Total entries: {len(data)}")
     lines.append("")
 
@@ -86,7 +87,10 @@ def generate_markdown(table: str, data: list) -> str:
 
     # Table rows
     for row in data:
-        values = [str(row.get(col, "")).replace("\n", " ").replace("|", r"\|") for col in columns]
+        escaped_pipe = "\\|"
+        values = [
+            str(row.get(col, "")).replace("\n", " ").replace("|", escaped_pipe) for col in columns
+        ]
         lines.append("| " + " | ".join(values) + " |")
 
     return "\n".join(lines)

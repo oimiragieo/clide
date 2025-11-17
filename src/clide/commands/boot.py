@@ -3,11 +3,11 @@
 from ..db import db
 from ..utils import (
     format_priority,
+    print_error,
     print_info,
     print_success,
     print_table,
     truncate,
-    print_error,
 )
 
 

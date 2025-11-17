@@ -75,14 +75,12 @@ def format_datetime(dt: str) -> str:
 
 def format_priority(priority: int) -> str:
     """Format priority with emoji."""
-    if priority == 1:
-        return "🔴 Critical"
-    elif priority == 2:
-        return "🟠 High"
-    elif priority == 3:
-        return "🟡 Medium"
-    else:
-        return "🟢 Low"
+    priority_map = {
+        1: "🔴 Critical",
+        2: "🟠 High",
+        3: "🟡 Medium",
+    }
+    return priority_map.get(priority, "🟢 Low")
 
 
 def format_status(status: str) -> str:

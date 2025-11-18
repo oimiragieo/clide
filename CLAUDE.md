@@ -105,6 +105,7 @@ chmod +x hooks/install-hooks.sh && hooks/install-hooks.sh
 #### Work Management
 - `clide story <title>` - Create work item/story
 - `clide defect <title>` - Create defect/bug report
+- `clide defect --resolve <id> -r "resolution"` - Resolve existing defect
 - `clide landmine <summary>` - Record gotcha/pitfall
 - `clide fix [defect_id]` - Analyze and fix defects
 
@@ -363,19 +364,26 @@ print_table(data, title="Results", columns=["id", "title", "status"])
 
 ---
 
-## Known Limitations & Gaps
+## Recent Improvements (v1.1.1)
+
+### Implemented Features
+1. ✅ **Automatic agents_log.md updates** - `clide save` now appends to agents_log.md
+2. ✅ **Defect resolution** - `clide defect --resolve <id>` command added
+3. ✅ **Testing status tracking** - `last_run_status` and `last_run_at` now populated via `db.record_test_run()`
+4. ✅ **Mypy type checking** - Enabled in CI/CD pipeline
+5. ✅ **Improved test coverage** - Comprehensive test suite added (10+ tests)
+6. ✅ **dash.py documented** - Clarified as legacy standalone mode
 
 ### Current Limitations
-1. **No automatic agents_log.md updates** - Must update manually
-2. **AI API keys configured but unused** - No AI features yet implemented
-3. **Minimal test coverage** - Only 2 basic tests exist
-4. **No authentication on dashboard** - Web UI is open access
-5. **Testing status tracking incomplete** - `last_run_*` columns not populated
+1. **AI API keys reserved for future use** - Configured but not actively used
+2. **No authentication on dashboard** - Web UI is open access
+3. **Voice output not integrated** - `speak.sh` exists but not used in commands
 
 ### Planned Features (Not Implemented)
 - `clide fix --auto` - AI-powered auto-fix (placeholder)
-- `clide defect --resolve` - Direct defect resolution (mentioned but not implemented)
-- Voice output via `speak.sh` (mentioned but not integrated)
+- Voice output via `speak.sh` integration
+- Dashboard authentication
+- Multi-user support
 
 ---
 

@@ -254,6 +254,64 @@ class Database:
             rows = self.execute(query, (limit,))
         return [dict(row) for row in rows]
 
+    # ========== Testing Operations ==========
+
+    def update_test_status(
+        self, testing_id: int, status: str, last_run_status: Optional[str] = None
+    ) -> None:
+        """Update testing status and last run information.
+
+        Args:
+            testing_id: ID of the testing entry
+            status: Overall test status (e.g., 'active', 'deprecated')
+            last_run_status: Status of last test run (e.g., 'passed', 'failed', 'skipped')
+        """
+        if last_run_status:
+            query = """
+                UPDATE testing
+                SET status = ?, last_run_status = ?, last_run_at = datetime('now')
+                WHERE id = ?
+            """
+            self.execute(query, (status, last_run_status, testing_id))
+        else:
+            query = "UPDATE testing SET status = ? WHERE id = ?"
+            self.execute(query, (status, testing_id))
+
+    def record_test_run(
+        self, area: str, status: str, details: Optional[str] = None
+    ) -> Optional[int]:
+        """Record a test run, updating or creating testing entry.
+
+        Args:
+            area: Test area name
+            status: Test run status ('passed', 'failed', 'skipped')
+            details: Optional details about the test run
+
+        Returns:
+            Testing ID if found/created, None otherwise
+        """
+        # Try to find existing test by area
+        existing = self.execute_one("SELECT id FROM testing WHERE area = ?", (area,))
+
+        if existing:
+            testing_id = existing["id"]
+            self.update_test_status(testing_id, "active", status)
+            return testing_id
+        else:
+            # Create new testing entry
+            query = """
+                INSERT INTO testing (area, steps, expected, status, last_run_status, last_run_at)
+                VALUES (?, ?, ?, ?, ?, datetime('now'))
+            """
+            with self.connection() as conn:
+                cursor = conn.execute(
+                    query,
+                    (area, details or "Automated test", "Test passes", "active", status),
+                )
+                return cursor.lastrowid
+
+        return None
+
     # ========== Views ==========
 
     def get_open_work(self, limit: int = 50) -> List[Dict[str, Any]]:

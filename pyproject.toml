@@ -43,8 +43,10 @@ dev = [
 clide = "clide.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/clide"
-Repository = "https://github.com/yourusername/clide"
+Homepage = "https://github.com/oimiragieo/clide"
+Repository = "https://github.com/oimiragieo/clide"
+Issues = "https://github.com/oimiragieo/clide/issues"
+Changelog = "https://github.com/oimiragieo/clide/blob/main/IMPROVEMENTS.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -17,6 +17,9 @@ jobs:
         run: |
           ruff check src/
           black --check src/
+      - name: Run type checking
+        run: mypy src/clide --ignore-missing-imports
+        continue-on-error: true
       - name: Run tests
         run: pytest tests/ -v --cov=src/clide
         continue-on-error: true

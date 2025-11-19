@@ -177,12 +177,19 @@ def story(ctx, title, description, priority, assignee, labels):
     help="Defect severity",
 )
 @click.option("--story-id", type=int, help="Link to story ID")
+@click.option("--resolve", type=int, metavar="DEFECT_ID", help="Resolve existing defect by ID")
+@click.option("--resolution", "-r", help="Resolution description (use with --resolve)")
 @click.pass_context
-def defect(ctx, title, description, severity, story_id):
-    """Create a new defect/bug report."""
+def defect(ctx, title, description, severity, story_id, resolve, resolution):
+    """Create a new defect/bug report or resolve an existing one.
+
+    Examples:
+        Create: clide defect "Login fails" -s critical
+        Resolve: clide defect --resolve 123 --resolution "Fixed auth token handling"
+    """
     from .commands.defect import defect_command
 
-    defect_command(title, description, severity, story_id)
+    defect_command(title, description, severity, story_id, resolve, resolution)
 
 
 @cli.command()

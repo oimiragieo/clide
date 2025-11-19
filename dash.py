@@ -1,4 +1,19 @@
-"""Clide Dashboard - Web interface for viewing project memory bank."""
+"""Clide Dashboard - Web interface for viewing project memory bank.
+
+LEGACY STANDALONE MODE:
+This file provides a lightweight standalone Flask dashboard that can be run
+directly without installing the full Clide CLI package.
+
+RECOMMENDED: Use the CLI command instead:
+    ./clide dashboard
+
+USAGE (standalone mode):
+    python3 dash.py
+
+NOTE: The CLI version (./clide dashboard) has better styling and is the
+preferred method. This standalone version is kept for backwards compatibility
+and minimal dependency scenarios.
+"""
 
 import os
 import sqlite3

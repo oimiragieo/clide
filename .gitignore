@@ -57,3 +57,8 @@ memory_bank_backup_*.db
 
 # Logs
 *.log
+
+# Generated reports
+reports/
+*.csv
+*.json

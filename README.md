@@ -1,8 +1,10 @@
-# Clide v1.1 — AI-Powered Project Memory Management CLI
+# Clide — AI-Powered Project Memory Management CLI
+
+> Version 1.1.0 | Python 3.8+ | MIT License
 
 Transform your repository into a **self-documenting, self-improving project** with persistent memory, automated insights, and AI-powered assistance.
 
-Clide is a Python-based CLI tool that uses SQLite to maintain project context, track work, learn from past experiences, and help AI agents (and humans) stay productive.
+Clide is a Python-based CLI tool that uses SQLite to maintain project context, track work, learn from past experiences, and help AI agents and developers stay productive.
 
 ---
 
@@ -22,23 +24,36 @@ Clide is a Python-based CLI tool that uses SQLite to maintain project context, t
 
 ## Quickstart
 
-### 1. Install Dependencies (REQUIRED)
+### 1. Install Dependencies
 
 ```bash
+# Install Python dependencies
 pip3 install -r requirements.txt
+
+# Or install as a package (editable mode for development)
+pip3 install -e .
 ```
 
-**Dependencies**: click, flask, rich, anthropic, python-dotenv, pytest, pytest-cov, black, ruff, pylint, mypy
-
-### 2. Initialize Database
+### 2. Configure Environment (Optional)
 
 ```bash
-chmod +x ./init_db.sh && ./init_db.sh
+# Copy example environment file
+cp .env.example .env
+
+# Edit .env to customize database path, dashboard settings, etc.
 ```
 
-**Windows**: Run `./init_db.ps1` instead
+### 3. Initialize Database
 
-### 3. Start Using Clide
+```bash
+# On Linux/macOS
+chmod +x ./init_db.sh && ./init_db.sh
+
+# On Windows
+./init_db.ps1
+```
+
+### 4. Start Using Clide
 
 ```bash
 # Load project context
@@ -51,23 +66,18 @@ chmod +x ./init_db.sh && ./init_db.sh
 ./clide --help
 ```
 
-### 4. (Optional) Install Git Hooks
+### 5. Optional Setup
 
+#### Install Git Hooks (Auto-save on commit, test on push)
 ```bash
 chmod +x hooks/install-hooks.sh && hooks/install-hooks.sh
 ```
 
-### 5. (Optional) Launch Web Dashboard
-
+#### Launch Web Dashboard
 ```bash
-# Using CLI command
 ./clide dashboard
-
-# OR using standalone script
-python3 dash.py
+# Visit http://127.0.0.1:5000
 ```
-
-Visit http://127.0.0.1:5000
 
 ---
 
@@ -85,6 +95,7 @@ Visit http://127.0.0.1:5000
 ### Work Management
 - `clide story <title>` - Create work item/story
 - `clide defect <title>` - Create defect/bug report
+- `clide defect --resolve <id> -r "resolution"` - Resolve existing defect
 - `clide landmine <summary>` - Record gotcha/pitfall
 - `clide fix [defect_id]` - Analyze and fix defects
 
@@ -150,11 +161,12 @@ Visit http://127.0.0.1:5000
 - `src/clide/` - Python package (CLI, database, commands, utilities)
 - `tests/` - Test suite (pytest)
 - `memory_bank.schema.sql` - Base database schema (v1.0)
-- `migrations/2025-08-28-v1_1.sql` - Schema upgrade to v1.1
+- `migrations/` - Database migrations (v1.1+)
 - `init_db.sh` / `init_db.ps1` - Database initialization scripts
-- `clide` - Executable wrapper
+- `clide` - Executable wrapper script
 - `requirements.txt` - Python dependencies
 - `pyproject.toml` - Modern Python packaging configuration
+- `.env.example` - Environment configuration template
 
 ### Documentation
 - `CLAUDE.md` - Comprehensive AI agent primer
@@ -177,10 +189,10 @@ Visit http://127.0.0.1:5000
   - `lessons.yml` - Weekly lessons report
 
 ### Utilities
-- `dash.py` - Standalone Flask dashboard
-- `speak.sh` - macOS voice output (optional)
-- `tools/sqlite-cheatsheet.md` - Quick SQLite reference
-- `agents_log.md` - Activity log (manual)
+- `dash.py` - Standalone Flask dashboard (legacy mode, use `clide dashboard` instead)
+- `speak.sh` - macOS voice output utility (optional, for future use)
+- `tools/` - Developer utilities and references
+- `agents_log.md` - Activity log
 
 ---
 
@@ -210,14 +222,22 @@ Visit http://127.0.0.1:5000
 
 ### Environment Variables
 
-Create a `.env` file:
+Copy the example file and customize:
 
 ```bash
-CLIDE_DB=memory_bank.db
-CLIDE_DASHBOARD_HOST=127.0.0.1
-CLIDE_DASHBOARD_PORT=5000
-CLIDE_VERBOSE=false
-ANTHROPIC_API_KEY=sk-...  # For future AI features
+cp .env.example .env
+# Edit .env with your preferred settings
+```
+
+Available configuration options:
+
+```bash
+CLIDE_DB=memory_bank.db          # Database file path
+CLIDE_DASHBOARD_HOST=127.0.0.1   # Dashboard server host
+CLIDE_DASHBOARD_PORT=5000        # Dashboard server port
+CLIDE_VERBOSE=false              # Enable verbose logging
+ANTHROPIC_API_KEY=sk-...         # Optional: For future AI features
+OPENAI_API_KEY=sk-...            # Optional: For future AI features
 ```
 
 ### CLI Flags
@@ -346,14 +366,15 @@ Initialize first:
 
 ---
 
-## Notes
+## Important Notes
 
-- SQLite is in **WAL mode** for safety with concurrent reads
-- All migrations are **idempotent** (safe to re-run)
-- CI jobs gracefully no-op if `memory_bank.db` is absent
-- Hooks are portable (install via `hooks/install-hooks.sh`)
-- Dashboard has no authentication (use firewall for remote access)
-- Slash commands in `slash-commands/` are **documentation templates**, not executable commands
+- **SQLite WAL Mode**: Database uses Write-Ahead Logging for safe concurrent reads
+- **Idempotent Migrations**: All database migrations are safe to re-run
+- **CI/CD Safety**: CI jobs gracefully handle missing database files
+- **Git Hooks**: Portable hooks installed via `hooks/install-hooks.sh`
+- **Dashboard Security**: Web dashboard has no authentication (localhost only by default)
+- **Slash Commands**: Files in `slash-commands/` are SQL documentation templates for AI agents, not executable CLI commands
+- **AI Features**: API key configuration is reserved for future AI-powered features
 
 ---
 
@@ -372,9 +393,15 @@ MIT - See LICENSE file
 
 ---
 
-## Version
+## Version Information
 
-**Current**: 1.1.0
-**Schema**: 1.1
-**Python**: 3.8+
-**Last Updated**: 2025-11-18
+| Component | Version | Status |
+|-----------|---------|--------|
+| Clide CLI | 1.1.0 | Stable |
+| Database Schema | 1.1 | Current |
+| Python Requirement | 3.8+ | Required |
+| Last Updated | 2025-11-20 | - |
+
+---
+
+**Contributing**: Issues and pull requests welcome at [github.com/oimiragieo/clide](https://github.com/oimiragieo/clide)

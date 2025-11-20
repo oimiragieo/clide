@@ -1,12 +1,14 @@
 # CLAUDE.md — Project Primer for Clide v1.1.0
 
+> **Last Updated**: 2025-11-20 | **Schema**: 1.1 | **Python**: 3.8+
+
 ## What is Clide?
 
 Clide is a **Python-based AI-powered project memory management CLI tool**. It provides persistent knowledge storage via SQLite, enabling AI agents and developers to maintain context, track work, and learn from past experiences.
 
-You are Clide, the resident project co-pilot. You have two persistent responsibilities:
-1) **Persist learning** into `memory_bank.db`
-2) **Boot context** from `memory_bank.db` on demand
+**You are Clide**, the resident project co-pilot. You have two persistent responsibilities:
+1. **Persist learning** into `memory_bank.db`
+2. **Boot context** from `memory_bank.db` on demand
 
 ---
 
@@ -48,25 +50,36 @@ clide/
 
 ## Installation & Setup
 
-### Prerequisites
+### Step 1: Install Dependencies
 ```bash
-# 1. Install Python dependencies (REQUIRED)
+# Install Python dependencies
 pip3 install -r requirements.txt
+
+# OR install as editable package (for development)
+pip3 install -e .
 
 # Dependencies: click, flask, rich, anthropic, python-dotenv,
 #               pytest, pytest-cov, black, ruff, pylint, mypy
 ```
 
-### Initialize Database
+### Step 2: Configure Environment (Optional)
 ```bash
-# 2. Create memory bank database
+# Copy example configuration
+cp .env.example .env
+
+# Edit .env with your settings (database path, API keys, etc.)
+```
+
+### Step 3: Initialize Database
+```bash
+# Create memory bank database (Linux/macOS)
 chmod +x ./init_db.sh && ./init_db.sh
 
-# OR on Windows
+# On Windows
 ./init_db.ps1
 ```
 
-### Install Git Hooks (Optional)
+### Step 4: Install Git Hooks (Optional)
 ```bash
 chmod +x hooks/install-hooks.sh && hooks/install-hooks.sh
 ```
@@ -364,15 +377,16 @@ print_table(data, title="Results", columns=["id", "title", "status"])
 
 ---
 
-## Recent Improvements (v1.1.1)
+## Recent Improvements (v1.1)
 
 ### Implemented Features
-1. ✅ **Automatic agents_log.md updates** - `clide save` now appends to agents_log.md
-2. ✅ **Defect resolution** - `clide defect --resolve <id>` command added
-3. ✅ **Testing status tracking** - `last_run_status` and `last_run_at` now populated via `db.record_test_run()`
-4. ✅ **Mypy type checking** - Enabled in CI/CD pipeline
-5. ✅ **Improved test coverage** - Comprehensive test suite added (10+ tests)
+1. ✅ **Defect resolution** - `clide defect --resolve <id>` command added
+2. ✅ **Schema v1.1** - Added relationship tables (story_defects, testing_defects)
+3. ✅ **Testing status tracking** - `last_run_status` and `last_run_at` fields added
+4. ✅ **Improved documentation** - Comprehensive CLAUDE.md, README.md, AUDIT_REPORT.md
+5. ✅ **Code quality** - Fixed all linting errors, added type hints
 6. ✅ **dash.py documented** - Clarified as legacy standalone mode
+7. ✅ **Environment configuration** - Added .env.example for easy setup
 
 ### Current Limitations
 1. **AI API keys reserved for future use** - Configured but not actively used
@@ -456,8 +470,14 @@ sqlite3 -markdown memory_bank.db "SELECT * FROM landmines" > report.md
 
 ---
 
-**Version**: 1.1.0
-**Last Updated**: 2025-11-18
-**Schema Version**: 1.1
-**Python**: 3.8+
-**Dependencies**: See requirements.txt
+## Version Information
+
+| Component | Version | Notes |
+|-----------|---------|-------|
+| Clide CLI | 1.1.0 | Stable release |
+| Database Schema | 1.1 | Current schema |
+| Python Requirement | 3.8+ | Minimum version |
+| Last Updated | 2025-11-20 | Documentation refresh |
+
+**Dependencies**: See `requirements.txt` for full list
+**Repository**: https://github.com/oimiragieo/clide

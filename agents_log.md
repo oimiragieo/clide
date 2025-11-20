@@ -20,3 +20,15 @@
 - [Claude] Updated CLAUDE.md: complete rewrite with accurate architecture, installation, usage
 - [Claude] Updated README.md: added installation step, clarified quickstart, improved UX
 - [Claude] Audit complete: codebase health=GOOD, production-ready with caveats
+
+## 2025-11-20
+- [Claude] Documentation and root folder cleanup initiated
+- [Claude] Examined root folder structure: all files necessary, well-organized Python project
+- [Claude] Created .env.example: template for environment configuration
+- [Claude] Updated .gitignore: added reports/, *.csv, *.json to ignore generated files
+- [Claude] Updated README.md: improved quickstart, added .env.example reference, clearer structure
+- [Claude] Updated README.md: added defect resolution command, updated version table
+- [Claude] Updated CLAUDE.md: added metadata header, updated installation steps with .env.example
+- [Claude] Updated CLAUDE.md: corrected "Recent Improvements" section from v1.1.1 to v1.1
+- [Claude] Updated CLAUDE.md: improved version information table, added repository link
+- [Claude] Documentation refresh complete: all docs accurate and consistent with v1.1.0
